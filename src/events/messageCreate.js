@@ -36,13 +36,19 @@ export default {
       // Ignora mensagens de outros bots e mensagens fora de servidores (DMs)
       if (message.author.bot || !message.guild) return;
 
-      logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
+      // VEJA AQUI: Cole o ID do canal desejado entre as aspas simples abaixo
+      const canalPermitidoId = '1516605703106859028';
 
-      // Seleciona uma frase aleatória e responde o usuário diretamente
-      const respostaAleatoria = frasesGenericas[Math.floor(Math.random() * frasesGenericas.length)];
-      await message.reply(respostaAleatoria).catch((err) => logger.error('Erro ao enviar frase genérica:', err));
+      // O bot só enviará a frase genérica se a mensagem for enviada no canal configurado acima
+      if (message.channel.id === canalPermitidoId) {
+        logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
-      // Continua com o fluxo normal do bot (jogos, comandos e XP)
+        // Seleciona uma frase aleatória e responde o usuário diretamente
+        const respostaAleatoria = frasesGenericas[Math.floor(Math.random() * frasesGenericas.length)];
+        await message.reply(respostaAleatoria).catch((err) => logger.error('Erro ao enviar frase genérica:', err));
+      }
+
+      // Continua com o fluxo normal do bot (jogos, comandos e XP continuam funcionando)
       const countingProcessed = await handleCountingGame(message, client);
       if (countingProcessed) {
         return;
