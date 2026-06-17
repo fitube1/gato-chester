@@ -21,14 +21,28 @@ import {
 const MESSAGE_XP_RATE_LIMIT_ATTEMPTS = 12;
 const MESSAGE_XP_RATE_LIMIT_WINDOW_MS = 10000;
 
+// Lista de frases genéricas que o bot utilizará para responder
+const frasesGenericas = [
+  "Meu nome é Gato Chester (tbm conhecido como gordão da familia wasserman)",
+  "Eu amo lamber os pés do sonic.",
+  "Miau",
+  "Me encheram de comida e agora estou rechunchudo."
+];
+
 export default {
   name: Events.MessageCreate,
   async execute(message, client) {
     try {
+      // Ignora mensagens de outros bots e mensagens fora de servidores (DMs)
       if (message.author.bot || !message.guild) return;
 
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
+      // Seleciona uma frase aleatória e responde o usuário diretamente
+      const respostaAleatoria = frasesGenericas[Math.floor(Math.random() * frasesGenericas.length)];
+      await message.reply(respostaAleatoria).catch((err) => logger.error('Erro ao enviar frase genérica:', err));
+
+      // Continua com o fluxo normal do bot (jogos, comandos e XP)
       const countingProcessed = await handleCountingGame(message, client);
       if (countingProcessed) {
         return;
